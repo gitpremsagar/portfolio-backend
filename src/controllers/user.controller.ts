@@ -43,8 +43,14 @@ export const createUser = async (req: Request, res: Response) => {
                 email,
                 password: hashedPassword,
             }
-        })
-        res.send(newUser);
+        });
+        const newUserData = {
+            userId: newUser.userId,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            email: newUser.email
+        }
+        res.status(201).send(newUserData);
     } catch (error) {
         res.status(400).send(error);
     }   
