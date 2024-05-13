@@ -3,6 +3,8 @@ dotenv.config();
 import { Request, Response } from "express";
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 
 const prisma = new PrismaClient();
 
@@ -15,18 +17,24 @@ export const createUser = async (req: Request, res: Response) => {
     const { firstName, lastName, email, password } = req.body;
 
     // Check if the user already exists
-    const userExists = await prisma.user.findUnique({
-        where: {
-            email: email
-        }
-    });
-
-    if (userExists) return res.status(400).send('User already exists');
+    try {
+        const userExists = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+    
+        if (userExists) return res.status(400).send('User already exists');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
 
     // Hash the password
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS!));
     const hashedPassword = await bcrypt.hash(password, salt);   
 
+    // insert user into database
     try {
         const newUser = await prisma.user.create({
             data: {
@@ -42,16 +50,59 @@ export const createUser = async (req: Request, res: Response) => {
     }   
 }
 
-export const getUserById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await prisma.user.findUnique({
-        where: {
-            userId: id,
-        }
-    });
+export const loginUser = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-    if (!user) return res.status(404).send('User not found');
-    res.send(user);
+    try {
+        // Check if the user exists
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+    
+        if (!user) return res.status(400).send('Invalid email or password');
+    
+        // Check if the password is correct
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(400).send('Invalid email or password');
+    
+        // check if the user is an admin
+        let userRoll = "visitor";
+        if (user.email === process.env.ADMIN_EMAIL) {
+            userRoll = "admin";
+        }
+    
+        // Create and assign a token
+        const token = jwt.sign({ 
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userRoll: userRoll,
+            userId: user.userId 
+        }, 
+        process.env.JWT_SECRET_KEY!);
+        res.header('Authorization', `Bearer ${token}`).send("Logged in");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+}
+
+export const getUserById = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const user = await prisma.user.findUnique({
+            where: {
+                userId: userId,
+            }
+        });
+    
+        if (!user) return res.status(404).send('User not found');
+        res.send(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
 }
 
 export const updateUserbyId = async (req:Request, res:Response)=>{
@@ -59,7 +110,6 @@ export const updateUserbyId = async (req:Request, res:Response)=>{
     const {firstName,lastName} =req.body;
 
     try {
-        
         const upDatedUser = await prisma.user.update({
             data:{
                 firstName,
@@ -71,12 +121,9 @@ export const updateUserbyId = async (req:Request, res:Response)=>{
         });
 
         res.status(200).send(upDatedUser);
-
     } catch(error) {
-
         console.log(error);
-        res.status(500).send(error)
-
+        res.status(500).send(error);
     }
 }
 

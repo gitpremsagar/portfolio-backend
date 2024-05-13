@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-export const userSignUpFormSchema = z.object({
+const userSignUpFormSchema = z.object({
     firstName: z.string().min(2, {
         message: "First name must be at least 2 characters.",
     }),
@@ -14,3 +14,12 @@ export const userSignUpFormSchema = z.object({
         message: "Password must be at least 8 characters.",
     }),
 });
+
+const jwtTokenSchema = z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    userRoll: z.string(),
+    userId: z.string(),
+});
+
+export { userSignUpFormSchema, jwtTokenSchema };
