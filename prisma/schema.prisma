@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// For using postgres as a database
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// For using sqlite as a database
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+// for using mysql as a database
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// model for projects to show on portfolio
+model Project {
+  projectId          String       @id @unique @default(uuid())
+  projectName        String
+  projectDescription String
+  projectLiveLink    String
+  frontendCodeLink   String
+  backendCodeLink    String
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  technologies       Technology[]
+}
+
+model Technology {
+  technologyId          String    @id @unique @default(uuid())
+  technologyName        String
+  technologyDescription String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  projects              Project[]
+}
+
+model Message {
+  messageId           String   @id @unique @default(uuid())
+  message             String
+  senderEmail         String
+  senderContactNumber Int
+  sentAt              DateTime @default(now())
+}
+
+model User {
+  userId    String   @id @unique @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  blogId        String    @id @unique @default(uuid())
+  blogTitle     String
+  blogContent   String
+  blogImage     String
+  blogCategory  String
+  blogTags      BlogTag[]
+  blogCreatedAt DateTime  @default(now())
+  blogUpdatedAt DateTime  @updatedAt
+  blogComments  Comment[]
+}
+
+model Comment {
+  commentId        String   @id @unique @default(uuid())
+  commentContent   String
+  commentAuthor    String
+  commentCreatedAt DateTime @default(now())
+  blog             Blog     @relation(fields: [blogId], references: [blogId])
+  blogId           String
+}
+
+model BlogTag {
+  blogTagId          String   @id @unique @default(uuid())
+  blogTagName        String
+  blogTagDescription String
+  blogTagCreatedAt   DateTime @default(now())
+  blogTagUpdatedAt   DateTime @updatedAt
+  blogs              Blog[]
+}
