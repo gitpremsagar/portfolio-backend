@@ -48,11 +48,11 @@ export const createTechnology = async (req:Request, res: Response)=>{
 
 export const updateTechnology = async (req:Request, res: Response)=>{
     try {
-        const {id} = req.params;
+        const {technologyId} = req.params;
         const {technologyName, technologyDescription, } = req.body;
         const technology = await prisma.technology.update({
             where: {
-                technologyId: id
+                technologyId: technologyId
             },
             data: {
                 technologyName,

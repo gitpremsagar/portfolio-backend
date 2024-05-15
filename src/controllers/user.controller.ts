@@ -8,12 +8,12 @@ import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-export const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response) => {
     const allUsers = await prisma.user.findMany()
     res.send(allUsers);
 }
 
-export const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
     const { firstName, lastName, email, password } = req.body;
 
     // Check if the user already exists
@@ -56,7 +56,7 @@ export const createUser = async (req: Request, res: Response) => {
     }   
 }
 
-export const loginUser = async (req: Request, res: Response) => {
+const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     try {
@@ -67,11 +67,11 @@ export const loginUser = async (req: Request, res: Response) => {
             }
         });
     
-        if (!user) return res.status(400).send('Invalid email or password');
+        if (!user) return res.status(401).send('Invalid email or password');
     
         // Check if the password is correct
         const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).send('Invalid email or password');
+        if (!validPassword) return res.status(401).send('Invalid email or password');
     
         // check if the user is an admin
         let userRoll = "visitor";
@@ -83,18 +83,19 @@ export const loginUser = async (req: Request, res: Response) => {
         const token = jwt.sign({ 
             firstName: user.firstName,
             lastName: user.lastName,
+            email: user.email,
             userRoll: userRoll,
             userId: user.userId 
         }, 
         process.env.JWT_SECRET_KEY!);
-        res.header('Authorization', `Bearer ${token}`).send("Logged in");
+        res.send(token);
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 }
 
-export const getUserById = async (req: Request, res: Response) => {
+const getUserById = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
         const user = await prisma.user.findUnique({
@@ -111,7 +112,7 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 }
 
-export const updateUserbyId = async (req:Request, res:Response)=>{
+const updateUserbyId = async (req:Request, res:Response)=>{
     const {userId} = req.params;
     const {firstName,lastName} =req.body;
 
@@ -133,3 +134,8 @@ export const updateUserbyId = async (req:Request, res:Response)=>{
     }
 }
 
+const getDecodedToken = (req: Request, res: Response, next: any) => {
+    res.send(req.user);
+}
+
+export { getAllUsers, getUserById, createUser, updateUserbyId, loginUser, getDecodedToken };

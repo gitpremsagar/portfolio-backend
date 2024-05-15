@@ -31,7 +31,10 @@ const verifyToken = async (
 ) => {
   // const token = req.header("Authorization");
   const token = req.header("Authorization")?.split(" ")[1];
-  if (!token) return res.status(401).send("Access Denied");
+  if (!token) {
+    console.log("No token provided");
+    return res.status(401).send("Access Denied");
+  }
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY!);
@@ -39,6 +42,7 @@ const verifyToken = async (
     
     next();
   } catch (error) {
+    console.log("Invalid Token");
     res.status(400).send("Invalid Token");
   }
 };
