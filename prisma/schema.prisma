@@ -28,15 +28,17 @@ datasource db {
 
 // model for projects to show on portfolio
 model Project {
-  projectId          String       @id @unique @default(uuid())
-  projectName        String
-  projectDescription String
-  projectLiveLink    String
-  frontendCodeLink   String
-  backendCodeLink    String
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-  technologies       Technology[]
+  projectId              String       @id @unique @default(uuid())
+  projectName            String
+  projectDescription     String
+  projectLiveLink        String
+  frontendCodeLink       String
+  backendCodeLink        String
+  projectImageLink       String
+  projectMockupImageLink String
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  technologies           Technology[]
 }
 
 model Technology {

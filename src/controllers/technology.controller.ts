@@ -69,10 +69,10 @@ export const updateTechnology = async (req:Request, res: Response)=>{
 
 export const deleteTechnology = async (req:Request, res: Response)=>{
     try {
-        const {id} = req.params;
+        const {technologyId} = req.params;
         await prisma.technology.delete({
             where: {
-                technologyId: id
+                technologyId: technologyId
             }
         });
         res.send("Technology deleted successfully");

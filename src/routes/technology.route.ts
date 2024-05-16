@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllTechnologies, createTechnology,deleteAllTechnologies, updateTechnology } from '../controllers/technology.controller';
+import { getAllTechnologies, createTechnology,deleteAllTechnologies, updateTechnology,deleteTechnology } from '../controllers/technology.controller';
 import { verifyToken } from '../middlewares/user.middleware';
 
 const router = express.Router();
@@ -10,6 +10,8 @@ router.get("/", getAllTechnologies);
 
 router.delete("/", deleteAllTechnologies);
 
-router.put("/:technologyId",verifyToken, updateTechnology);// TODO:protect route
+router.put("/:technologyId",verifyToken, updateTechnology);
+
+router.delete("/:technologyId", deleteTechnology);// TODO:protect route
 
 export default router;

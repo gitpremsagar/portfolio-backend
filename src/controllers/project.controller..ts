@@ -37,7 +37,8 @@ export const getProjectById = async (req:Request, res: Response)=>{
 
 export const createProject = async (req:Request, res: Response)=>{
     try {
-        const {projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink} = req.body;
+        const {projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink,projectImageLink,projectMockupImageLink} = req.body;
+        const techIds = technologies.map((tech: any) => tech.technologyId);
         const project = await prisma.project.create({
             data: {
                 projectName,
@@ -45,8 +46,14 @@ export const createProject = async (req:Request, res: Response)=>{
                 projectLiveLink,
                 frontendCodeLink,
                 backendCodeLink,
+                projectImageLink,
+                projectMockupImageLink,
+
+                // technologies: {
+                //     connect: technologies.map((tech: string) => ({technologyId: tech}))
+                // }
                 technologies: {
-                    connect: technologies.map((tech: string) => ({technologyId: tech}))
+                    connect: techIds.map((techId: string) => ({technologyId: techId}))
                 }
             }
         });
@@ -54,5 +61,49 @@ export const createProject = async (req:Request, res: Response)=>{
     } catch (error) {
         console.log("error creating project in db = ", error)
         res.status(500).send("Error creating project in db")
+    }    
+}
+
+export const updateProjectById = async (req:Request, res: Response)=>{
+    try {
+        const {projectId} = req.params;
+        const {projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink,projectImageLink,projectMockupImageLink} = req.body;
+        const techIds = technologies.map((tech: any) => tech.technologyId);
+        const project = await prisma.project.update({
+            where: {
+                projectId: projectId
+            },
+            data: {
+                projectName,
+                projectDescription,
+                projectLiveLink,
+                frontendCodeLink,
+                backendCodeLink,
+                projectImageLink,
+                projectMockupImageLink,
+                technologies: {
+                    connect: techIds.map((techId: string) => ({technologyId: techId}))
+                }
+            }
+        });
+        res.send(project);
+    } catch (error) {
+        console.log("error updating project in db = ", error)
+        res.status(500).send("Error updating project in db")
+    }    
+}
+
+export const deleteProjectById = async (req:Request, res: Response)=>{
+    try {
+        const {projectId} = req.params;
+        const project = await prisma.project.delete({
+            where: {
+                projectId: projectId
+            }
+        });
+        res.send(project);
+    } catch (error) {
+        console.log("error deleting project in db = ", error)
+        res.status(500).send("Error deleting project in db")
     }    
 }
