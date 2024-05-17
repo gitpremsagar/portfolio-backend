@@ -29,6 +29,7 @@ datasource db {
 // model for projects to show on portfolio
 model Project {
   projectId              String       @id @unique @default(uuid())
+  projectPosition        Int          @default(0)
   projectName            String
   projectDescription     String
   projectLiveLink        String

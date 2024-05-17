@@ -23,6 +23,7 @@ const TechnologySchema = z.object({
 
 const ProjectSchema = z.object({
     projectId: z.string(),
+    projectPosition: z.number(),
     projectName: z.string().min(2,{message:"Project name should be atleast 2 characters long"}).max(255,{message:"Project name should be atmost 255 characters long"}).transform((data)=>data.trim()),
     projectDescription: z.string(),
     projectLiveLink: z.string(),

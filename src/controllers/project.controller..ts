@@ -37,7 +37,7 @@ export const getProjectById = async (req:Request, res: Response)=>{
 
 export const createProject = async (req:Request, res: Response)=>{
     try {
-        const {projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink,projectImageLink,projectMockupImageLink} = req.body;
+        const {projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink,projectImageLink,projectMockupImageLink,projectPosition} = req.body;
         const techIds = technologies.map((tech: any) => tech.technologyId);
         const project = await prisma.project.create({
             data: {
@@ -48,6 +48,7 @@ export const createProject = async (req:Request, res: Response)=>{
                 backendCodeLink,
                 projectImageLink,
                 projectMockupImageLink,
+                projectPosition,
 
                 // technologies: {
                 //     connect: technologies.map((tech: string) => ({technologyId: tech}))
