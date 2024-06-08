@@ -15,6 +15,8 @@ import userRouteHandlers from "./routes/routes.user";
 import projectRouteHandler from "./routes/project.route";
 import technologyRouteHandler from "./routes/technology.route";
 
+app.use("/public", express.static("public"));
+
 app.get("/",(req: Request, res: Response) =>{
     res.send("Hello World");
 });
