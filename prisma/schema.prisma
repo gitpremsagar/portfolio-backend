@@ -55,7 +55,8 @@ model Message {
   messageId           String   @id @unique @default(uuid())
   message             String
   senderEmail         String
-  senderContactNumber Int
+  senderName          String
+  senderContactNumber String
   sentAt              DateTime @default(now())
 }
 
