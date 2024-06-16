@@ -20,15 +20,21 @@ generator client {
 //   url      = "file:./dev.db"
 // }
 
-// for using mysql as a database
+// // for using mysql as a database
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+// for using mongodb as a database
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 // model for projects to show on portfolio
 model Project {
-  projectId              String       @id @unique @default(uuid())
+  projectId              String       @id @default(uuid()) @map("_id")
   projectPosition        Int          @default(0)
   projectName            String
   projectDescription     String
@@ -39,20 +45,22 @@ model Project {
   projectMockupImageLink String
   createdAt              DateTime     @default(now())
   updatedAt              DateTime     @updatedAt
-  technologies           Technology[]
+  technologyIDs          String[]
+  technologies           Technology[] @relation(fields: [technologyIDs], references: [technologyId])
 }
 
 model Technology {
-  technologyId          String    @id @unique @default(uuid())
+  technologyId          String    @id @default(uuid()) @map("_id")
   technologyName        String
   technologyDescription String
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-  projects              Project[]
+  projectIDs            String[]
+  projects              Project[] @relation(fields: [projectIDs], references: [projectId])
 }
 
 model Message {
-  messageId           String   @id @unique @default(uuid())
+  messageId           String   @id @default(uuid()) @map("_id")
   message             String
   senderEmail         String
   senderName          String
@@ -61,7 +69,7 @@ model Message {
 }
 
 model User {
-  userId    String   @id @unique @default(uuid())
+  userId    String   @id @default(uuid()) @map("_id")
   firstName String
   lastName  String
   email     String   @unique
@@ -71,19 +79,20 @@ model User {
 }
 
 model Blog {
-  blogId        String    @id @unique @default(uuid())
+  blogId        String    @id @default(uuid()) @map("_id")
   blogTitle     String
   blogContent   String
   blogImage     String
   blogCategory  String
-  blogTags      BlogTag[]
+  blogTagsIDs   String[]
+  blogTags      BlogTag[] @relation(fields: [blogTagsIDs], references: [blogTagId])
   blogCreatedAt DateTime  @default(now())
   blogUpdatedAt DateTime  @updatedAt
   blogComments  Comment[]
 }
 
 model Comment {
-  commentId        String   @id @unique @default(uuid())
+  commentId        String   @id @default(uuid()) @map("_id")
   commentContent   String
   commentAuthor    String
   commentCreatedAt DateTime @default(now())
@@ -92,10 +101,11 @@ model Comment {
 }
 
 model BlogTag {
-  blogTagId          String   @id @unique @default(uuid())
+  blogTagId          String   @id @default(uuid()) @map("_id")
   blogTagName        String
   blogTagDescription String
   blogTagCreatedAt   DateTime @default(now())
   blogTagUpdatedAt   DateTime @updatedAt
-  blogs              Blog[]
+  blogIDs            String[]
+  blogs              Blog[]   @relation(fields: [blogIDs], references: [blogId])
 }

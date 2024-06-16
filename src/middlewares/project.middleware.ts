@@ -7,7 +7,7 @@ export const uploadImages = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("uploadProjectImage middleware");
+  // console.log("uploadProjectImage middleware");
 
   upload.fields([
     { name: "projectImage", maxCount: 1 },

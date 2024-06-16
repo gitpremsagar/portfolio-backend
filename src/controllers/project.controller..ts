@@ -36,8 +36,8 @@ export const getProjectById = async (req: Request, res: Response) => {
 };
 
 export const createProject = async (req: Request, res: Response) => {
-  console.log("files = ", req.files);
-  console.log("body = ", req.body);
+  // console.log("files = ", req.files);
+  // console.log("body = ", req.body);
   try {
     const {
       projectName,
