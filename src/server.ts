@@ -28,6 +28,7 @@ app.use("/api/technologies", technologyRouteHandler);
 app.use("/api/messages", messageRouteHandler);
 
 const PORT: string | number = process.env.PORT || 5000;
+console.log("DATABASE_URL = ", process.env.DATABASE_URL);
 
 app.listen(PORT, () =>
   console.log(`Server running on port ${PORT}\nhttp://localhost:${PORT}`)
