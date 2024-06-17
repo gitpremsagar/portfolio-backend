@@ -6,11 +6,9 @@ import {
   deleteProjectById,
   updateProjectById,
 } from "../controllers/project.controller.";
-// import { uploadImages } from "../middlewares/project.middleware";
 
 const router = express.Router();
 
-// router.post("/", uploadImages, createProject);
 router.post("/", createProject);
 
 router.get("/", getAllProjects);
