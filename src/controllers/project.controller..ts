@@ -87,6 +87,9 @@ export const createProject = async (req: Request, res: Response) => {
           })),
         },
       },
+      include: {
+        technologies: true,
+      },
     });
     res.send(project);
   } catch (error) {
