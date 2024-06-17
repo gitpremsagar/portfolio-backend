@@ -48,28 +48,28 @@ export const createProject = async (req: Request, res: Response) => {
       backendCodeLink,
       projectPosition,
     } = req.body;
-    const technologiesAsJson = JSON.parse(technologies);
+    // const technologiesAsJson = JSON.parse(technologies);
     const projPosition = parseInt(projectPosition);
     let projectImageLink = "https://via.placeholder.com/150";
-    if (
-      req.files &&
-      "projectImage" in req.files &&
-      req.files["projectImage"].length > 0
-    ) {
-      projectImageLink = req.files["projectImage"][0].path;
-    } else {
-      return res.status(400).send("projectImage is required");
-    }
+    // if (
+    //   req.files &&
+    //   "projectImage" in req.files &&
+    //   req.files["projectImage"].length > 0
+    // ) {
+    //   projectImageLink = req.files["projectImage"][0].path;
+    // } else {
+    //   return res.status(400).send("projectImage is required");
+    // }
     let projectMockupImageLink = "https://via.placeholder.com/150";
-    if (
-      req.files &&
-      "projectMockupImage" in req.files &&
-      req.files["projectMockupImage"].length > 0
-    ) {
-      projectMockupImageLink = req.files["projectMockupImage"][0].path;
-    } else {
-      return res.status(400).send("projectMockupImage is required");
-    }
+    // if (
+    //   req.files &&
+    //   "projectMockupImage" in req.files &&
+    //   req.files["projectMockupImage"].length > 0
+    // ) {
+    //   projectMockupImageLink = req.files["projectMockupImage"][0].path;
+    // } else {
+    //   return res.status(400).send("projectMockupImage is required");
+    // }
     const project = await prisma.project.create({
       data: {
         projectName,
@@ -82,7 +82,7 @@ export const createProject = async (req: Request, res: Response) => {
         projectPosition: projPosition,
 
         technologies: {
-          connect: technologiesAsJson.map((technologyId: String) => ({
+          connect: technologies.map((technologyId: String) => ({
             technologyId: technologyId,
           })),
         },
