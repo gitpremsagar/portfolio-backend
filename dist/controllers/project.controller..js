@@ -51,26 +51,28 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     // console.log("body = ", req.body);
     try {
         const { projectName, projectDescription, technologies, projectLiveLink, frontendCodeLink, backendCodeLink, projectPosition, } = req.body;
-        const technologiesAsJson = JSON.parse(technologies);
+        // const technologiesAsJson = JSON.parse(technologies);
         const projPosition = parseInt(projectPosition);
         let projectImageLink = "https://via.placeholder.com/150";
-        if (req.files &&
-            "projectImage" in req.files &&
-            req.files["projectImage"].length > 0) {
-            projectImageLink = req.files["projectImage"][0].path;
-        }
-        else {
-            return res.status(400).send("projectImage is required");
-        }
+        // if (
+        //   req.files &&
+        //   "projectImage" in req.files &&
+        //   req.files["projectImage"].length > 0
+        // ) {
+        //   projectImageLink = req.files["projectImage"][0].path;
+        // } else {
+        //   return res.status(400).send("projectImage is required");
+        // }
         let projectMockupImageLink = "https://via.placeholder.com/150";
-        if (req.files &&
-            "projectMockupImage" in req.files &&
-            req.files["projectMockupImage"].length > 0) {
-            projectMockupImageLink = req.files["projectMockupImage"][0].path;
-        }
-        else {
-            return res.status(400).send("projectMockupImage is required");
-        }
+        // if (
+        //   req.files &&
+        //   "projectMockupImage" in req.files &&
+        //   req.files["projectMockupImage"].length > 0
+        // ) {
+        //   projectMockupImageLink = req.files["projectMockupImage"][0].path;
+        // } else {
+        //   return res.status(400).send("projectMockupImage is required");
+        // }
         const project = yield prisma.project.create({
             data: {
                 projectName,
@@ -82,10 +84,13 @@ const createProject = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 projectMockupImageLink: projectMockupImageLink,
                 projectPosition: projPosition,
                 technologies: {
-                    connect: technologiesAsJson.map((technologyId) => ({
+                    connect: technologies.map((technologyId) => ({
                         technologyId: technologyId,
                     })),
                 },
+            },
+            include: {
+                technologies: true,
             },
         });
         res.send(project);
